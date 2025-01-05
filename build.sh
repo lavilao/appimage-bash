@@ -105,7 +105,7 @@ PACKAGE=$(cat "$APP_VERSION_FILE")
 
 # Default search for version inside version file, otherwise run specified bash.
 if [ -z "$APP_VERSION_BASH" ]; then
-  VERSION=$(sed -n 's/^version=//p' $APP_DEPLOY/"$APP_VERSION_FILE")
+  VERSION=$(sed -n 's/^version=//p' "$APP_VERSION_FILE")
 else
   VERSION=$(echo "$PACKAGE" | $APP_VERSION_BASH)
 fi
