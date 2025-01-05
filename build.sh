@@ -162,21 +162,19 @@ sed -i '/VersionBash/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
 sed -i '/VersionIcon/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
 sed -i '/VersionDirectory/d' $APP_DIRECTORY/"$APP_SHORT_NAME".desktop
 
-ICON_PATH=$(find $APP_DEPLOY -type f -name "$APP_VERSION_ICON")
-ICON_EXTENSION="${ICON_PATH#*.}"
+# Find the icons in the extracted zed.app directory
+ICON_PATH_1024=$(find . -name "zed.png" -path "*/1024x1024/*" -type f)
+ICON_PATH_512=$(find . -name "zed.png" -path "*/512x512/*" -type f)
 
-# Handle svg differently.
-if [ "$ICON_EXTENSION" == "svg" ];
-then
-  cp "$ICON_PATH" $APP_DIRECTORY/"$APP_ICON"."$ICON_EXTENSION"
-  cp "$ICON_PATH" $APP_DIRECTORY/usr/share/icons/hicolor/512x512/apps/"$APP_SHORT_NAME"."$ICON_EXTENSION"
-  cp "$ICON_PATH" $APP_DIRECTORY/usr/share/icons/hicolor/256x256/apps/"$APP_SHORT_NAME"."$ICON_EXTENSION"
-  cp "$ICON_PATH" $APP_DIRECTORY/usr/share/icons/hicolor/128x128/apps/"$APP_SHORT_NAME"."$ICON_EXTENSION"
+if [ -f "$ICON_PATH_1024" ]; then
+    cp "$ICON_PATH_1024" $APP_DIRECTORY/"$APP_ICON".png
+    cp "$ICON_PATH_1024" $APP_DIRECTORY/usr/share/icons/hicolor/512x512/apps/"$APP_SHORT_NAME".png
+    cp "$ICON_PATH_512" $APP_DIRECTORY/usr/share/icons/hicolor/256x256/apps/"$APP_SHORT_NAME".png
+    cp "$ICON_PATH_512" $APP_DIRECTORY/usr/share/icons/hicolor/128x128/apps/"$APP_SHORT_NAME".png
 else
-  cp "$ICON_PATH" $APP_DIRECTORY/"$APP_ICON"."$ICON_EXTENSION"
-  convert "$ICON_PATH" -resize 512x512 $APP_DIRECTORY/usr/share/icons/hicolor/512x512/apps/"$APP_SHORT_NAME"."$ICON_EXTENSION"
-  convert "$ICON_PATH" -resize 256x256 $APP_DIRECTORY/usr/share/icons/hicolor/256x256/apps/"$APP_SHORT_NAME"."$ICON_EXTENSION"
-  convert "$ICON_PATH" -resize 128x128 $APP_DIRECTORY/usr/share/icons/hicolor/128x128/apps/"$APP_SHORT_NAME"."$ICON_EXTENSION"
+    echo "Error: Could not find icon files in the extracted directory"
+    find . -name "zed.png" # Debug output to see where the icons actually are
+    exit 1
 fi
 
 echo "==> Build $APP_SHORT_NAME AppImage"
