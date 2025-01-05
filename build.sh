@@ -101,7 +101,7 @@ echo "==> Extract $APP_SHORT_NAME"
 tar -xzvf "$APP_SHORT_NAME".tar.gz --strip-components=1 -C $APP_DEPLOY && rm -r *.tar.gz
 
 echo "==> Check Version $APP_SHORT_NAME"
-PACKAGE=$(cat "$APP_DEPLOY"/"$APP_VERSION_FILE")
+PACKAGE=$(cat "$APP_VERSION_FILE")
 
 # Default search for version inside version file, otherwise run specified bash.
 if [ -z "$APP_VERSION_BASH" ]; then
